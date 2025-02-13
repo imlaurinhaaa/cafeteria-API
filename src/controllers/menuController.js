@@ -1,5 +1,5 @@
-const Menu = require("../models/Menu");
-const Item = require("../models/Item");
+const Menu = require("../models/Menu.js");
+const Item = require("../models/Item.js");
 
 const list = new Menu();
 
