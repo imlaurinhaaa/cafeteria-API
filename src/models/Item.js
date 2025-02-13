@@ -1,4 +1,4 @@
-class Menu {
+class Item {
     constructor(type, foodDescription, price) {
         this.type = type;
         this.foodDescription = foodDescription;
@@ -6,4 +6,4 @@ class Menu {
     }
 }
 
-module.exports = Menu;
+module.exports = Item;

@@ -11,3 +11,5 @@ class Menu {
         return this.items;
     }
 }
+
+module.exports = Menu;
