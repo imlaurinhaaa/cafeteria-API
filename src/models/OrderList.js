@@ -16,10 +16,11 @@ class OrderList {
         if (!order) {
             throw new Error('Order not found');
         }
+        return order;
     }
 
     deleteOrder(id) {
-        this.orders = this.orders.filter((order) => order.id != id);
+        this.orders = this.orders.filter(order => order.id != id);
     }
 }
 

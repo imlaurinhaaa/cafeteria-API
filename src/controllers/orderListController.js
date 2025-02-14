@@ -32,21 +32,20 @@ const router = {
 
     getOrderById: (req, res) => {
         try {
-            const { id } = req.params;
-            const order = listing.getOrderById(id);
-            res.status(200).json(order);
+            const id = req.params.id;
+            res.status(200).json(listing.getOrderById(id));
         } catch (error) {
-            res.status(404).json({ message: "Order not Found" });
+            res.status(404).json({message: "Order not Found"});
         }
     },
 
     deleteOrder: (req, res) => {
         try {
-            const { id } = req.params;
-            listing.deleteOrder(id);
-            res.status(200).json({ message: "Order deleted successfully" });
+            const order = req.params.id;
+            listing.deleteOrder(order);
+            res.status(200).json({ message: "Order deleted" });
         } catch (error) {
-            res.status(404).json({ message: "Order not Found" });
+            res.status(404).json({ message: "Error to delete Order"});
         }
     }
 }
