@@ -11,5 +11,5 @@ app.use(express.json());
 app.use("/api", menuRoutes);
 
 app.listen(PORT, () => {
-    console.log(`Servidor rodando ✌ http://localhost:${PORT}`);
+    console.log(`Servidor rodando ☕ http://localhost:${PORT}`);
 });

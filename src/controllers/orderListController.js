@@ -4,14 +4,17 @@ const Order = require("../models/Order.js");
 const listing = new OrderList();
 
 listing.addOrder(new Order("Ediana", "Salgado", "Pão de Queijo", 5.00, "pendente"));
-listing.addOrder(new Order("Paulo", "Salgado", "Hamburgão", 8.00, "pendente"));
+listing.addOrder(new Order("Paulo", "Salgado", "Hamburgão", 8.00, "em preparo"));
 
 const router = {
     addOrder: (req, res) => {
         try {
             const { client, type, foodDescription, price, status } = req.body;
             if (!client || !type || !foodDescription || !price || !status) {
-                throw new Error("Missing parameters");
+                res.status(400).json({ message: "Missing parameters" });
+            }
+            if (status !== "pendente" && status !== "em preparo" && status !== "pronto") {
+                res.status(400).json({ message: "Invalid status" });
             }
             const order = new Order(client, type, foodDescription, price, status);
             listing.addOrder(order);
@@ -33,9 +36,14 @@ const router = {
     getOrderById: (req, res) => {
         try {
             const id = req.params.id;
-            res.status(200).json(listing.getOrderById(id));
+            const order = listing.getOrderById(id);
+            if (order) {
+                res.status(200).json({ client: order.client, status: order.status });
+            } else {
+                res.status(404).json({ message: "Order not Found" });
+            }
         } catch (error) {
-            res.status(404).json({message: "Order not Found"});
+            res.status(404).json({ message: "Order not Found" });
         }
     },
 
@@ -43,9 +51,12 @@ const router = {
         try {
             const order = req.params.id;
             listing.deleteOrder(order);
-            res.status(200).json({ message: "Order deleted" });
+            if (order.status == "pendente") {
+                listing.deleteOrder(order);
+                res.status(200).json({ message: "Order deleted" });
+            }
         } catch (error) {
-            res.status(404).json({ message: "Error to delete Order"});
+            res.status(404).json({ message: "Error to delete Order" });
         }
     }
 }
