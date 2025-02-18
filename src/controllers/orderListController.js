@@ -1,5 +1,6 @@
 const OrderList = require("../models/OrderList.js");
 const Order = require("../models/Order.js");
+const menuController = require("../controllers/MenuController.js");
 
 const listing = new OrderList();
 
@@ -11,14 +12,17 @@ const router = {
         try {
             const { client, type, foodDescription, price, status } = req.body;
             if (!client || !type || !foodDescription || !price || !status) {
-                res.status(400).json({ message: "Missing parameters" });
+                res.status(400).json({ message: "Por favor preencher todos os requisitos!" });
             }
             if (status !== "pendente" && status !== "em preparo" && status !== "pronto") {
-                res.status(400).json({ message: "Invalid status" });
+                res.status(400).json({ message: "Status inválido, por favor tente: pendente, em preparo ou pronto" });
+            }
+            if (typeof price !== "number") {
+                res.status(400).json({ message: "Preço precisa ser um número" });
             }
             const order = new Order(client, type, foodDescription, price, status);
             listing.addOrder(order);
-            res.status(200).json({ message: "Order added successfully" });
+            res.status(200).json({ message: "Pedidio finalizado!", order });
         } catch (error) {
             res.status(400).json({ message: "Error to add Order" });
         }
@@ -29,7 +33,7 @@ const router = {
             const orders = listing.getAllOrders();
             res.status(200).json(orders);
         } catch (error) {
-            res.status(404).json({ message: "Order List not Found" });
+            res.status(404).json({ message: "Não foi possível visualizar os pedidos" });
         }
     },
 
@@ -40,10 +44,10 @@ const router = {
             if (order) {
                 res.status(200).json({ client: order.client, status: order.status });
             } else {
-                res.status(404).json({ message: "Order not Found" });
+                res.status(404).json({ message: "Confira o andamento de seu pedido" });
             }
         } catch (error) {
-            res.status(404).json({ message: "Order not Found" });
+            res.status(404).json({ message: "Pedido não encontrado" });
         }
     },
 
@@ -53,10 +57,10 @@ const router = {
             listing.deleteOrder(order);
             if (order.status == "pendente") {
                 listing.deleteOrder(order);
-                res.status(200).json({ message: "Order deleted" });
+                res.status(200).json({ message: "Pedido cancelado" });
             }
         } catch (error) {
-            res.status(404).json({ message: "Error to delete Order" });
+            res.status(404).json({ message: "Infelizmente o pedido não pode ser cancelado" });
         }
     }
 }
