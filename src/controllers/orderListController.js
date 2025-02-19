@@ -1,6 +1,5 @@
 const OrderList = require("../models/OrderList.js");
 const Order = require("../models/Order.js");
-const menuController = require("../controllers/MenuController.js");
 
 const listing = new OrderList();
 
@@ -12,17 +11,14 @@ const router = {
         try {
             const { client, type, foodDescription, price, status } = req.body;
             if (!client || !type || !foodDescription || !price || !status) {
-                res.status(400).json({ message: "Por favor preencher todos os requisitos!" });
+                res.status(400).json({ message: "Missing parameters" });
             }
             if (status !== "pendente" && status !== "em preparo" && status !== "pronto") {
-                res.status(400).json({ message: "Status inválido, por favor tente: pendente, em preparo ou pronto" });
-            }
-            if (typeof price !== "number") {
-                res.status(400).json({ message: "Preço precisa ser um número" });
+                res.status(400).json({ message: "Invalid status" });
             }
             const order = new Order(client, type, foodDescription, price, status);
             listing.addOrder(order);
-            res.status(200).json({ message: "Pedidio finalizado!", order });
+            res.status(200).json({ message: "Order added successfully" });
         } catch (error) {
             res.status(400).json({ message: "Error to add Order" });
         }
@@ -33,7 +29,7 @@ const router = {
             const orders = listing.getAllOrders();
             res.status(200).json(orders);
         } catch (error) {
-            res.status(404).json({ message: "Não foi possível visualizar os pedidos" });
+            res.status(404).json({ message: "Order List not Found" });
         }
     },
 
@@ -44,20 +40,22 @@ const router = {
             if (order) {
                 res.status(200).json({ client: order.client, status: order.status });
             } else {
-                res.status(404).json({ message: "Confira o andamento de seu pedido" });
+                res.status(404).json({ message: "Order not Found" });
             }
         } catch (error) {
-            res.status(404).json({ message: "Pedido não encontrado" });
+            res.status(404).json({ message: "Order not Found" });
         }
     },
 
     deleteOrder: (req, res) => {
         try {
-            const order = req.params.id;
-            listing.deleteOrder(order);
-            if (order.status == "pendente") {
-                listing.deleteOrder(order);
+            const id = req.params.id;
+            const order = listing.getOrderById(id);
+            if (order.status === "pendente") {
+                listing.deleteOrder(id);
                 res.status(200).json({ message: "Pedido cancelado" });
+            } else {
+                res.status(400).json({ message: "Não é possível cancelar um pedido que não está pendente" });
             }
         } catch (error) {
             res.status(404).json({ message: "Infelizmente o pedido não pode ser cancelado" });
