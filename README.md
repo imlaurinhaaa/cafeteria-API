@@ -4,10 +4,11 @@ Atividade proposta para criação de uma API que deve permitir que clientes faç
 
 ## Endpoints da API
 
- **1️⃣ GET /menu** → Retorna o cardápio da cafeteria.
- **2️⃣ POST /order** → Permite que um cliente faça um pedido.
- **3️⃣ GET /order/:id** → Consulta o status de um pedido.
- **4️⃣ DELETE /order/:id** → Cancela um pedido (caso ainda não tenha sido preparado).
+ -**1️⃣ GET /menu** → Retorna o cardápio da cafeteria.
+ -**2️⃣ POST /order** → Permite que um cliente faça um pedido.
+ -**3️⃣ GET /order** → Consulta o todos os pedidos.
+ -**4️⃣ GET /order/:id** → Consulta o status de um pedido.
+ -**5️⃣ DELETE /order/:id** → Cancela um pedido (caso ainda não tenha sido preparado).
 
 ## Aplicativos Utilizados 📲
 
